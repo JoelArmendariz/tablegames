@@ -1,22 +1,26 @@
 import { Suspense, useState } from 'react';
-import { useThree } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, useTexture } from '@react-three/drei';
 import { useBox } from '@react-three/cannon';
 import { CheckersPieceConfig, checkersPiecePositions } from './checkersUtils';
 
 import CheckersPiece from './CheckersPiece';
 import boardMap from '../../assets/chess-board-art.jpeg';
+import { update } from '@tweenjs/tween.js';
 
 const Checkers = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [boardRef] = useBox(() => ({
     mass: 1,
-    args: [50, 50, 1],
-    rotation: [-Math.PI / 2, 0, 0],
+    args: [10, 0.1, 10],
     type: 'Static',
   }));
   const { camera } = useThree();
   const texture = useTexture(boardMap);
+
+  useFrame(() => {
+    update();
+  });
 
   return (
     <Suspense fallback={null}>
@@ -25,7 +29,7 @@ const Checkers = () => {
         //  @ts-ignore
         ref={boardRef}
       >
-        <boxGeometry args={[50, 50, 1]} />
+        <boxGeometry args={[10, 0.1, 10]} />
         <meshLambertMaterial map={texture} />
       </mesh>
       {checkersPiecePositions.map((row: CheckersPieceConfig[]) =>

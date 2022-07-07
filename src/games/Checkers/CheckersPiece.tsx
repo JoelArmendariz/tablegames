@@ -1,6 +1,13 @@
 import { useCylinder } from '@react-three/cannon';
+import { useState } from 'react';
 import DraggableMesh from '../../components/DraggableMesh';
 import { getNearestBoardPosition } from './checkersUtils';
+import checkersMap from '../../assets/checkers_PNG18.png';
+import boardMap from '../../assets/chess-board-art.jpeg';
+import { useTexture } from '@react-three/drei';
+import useObjectInteractions, {
+  InteractionTypes,
+} from '../../hooks/useObjectInteractions';
 
 interface CheckersProps {
   position: [number, number, number];
@@ -10,23 +17,38 @@ interface CheckersProps {
 }
 
 const CheckersPiece = ({ position, setIsDragging, isDragging, color }: CheckersProps) => {
+  const [shouldInteract, setShouldInteract] = useState(false);
   const [pieceRef, pieceApi] = useCylinder(() => ({
     mass: 1,
     position,
-    args: [2, 2, 1],
+    args: [0.5, 0.5, 0.2],
   }));
+  const texture1 = useTexture(checkersMap);
+  const texture2 = useTexture(boardMap);
+
+  useObjectInteractions({
+    enabledInteractions: [InteractionTypes.Rotate, InteractionTypes.Flip],
+    shouldInteract,
+    objectRef: pieceRef,
+    objectApi: pieceApi,
+    isDragging,
+    getSnapPosition: getNearestBoardPosition,
+  });
 
   return (
     <DraggableMesh
       initialPosition={position}
+      onHoverCallback={({ hovering }) => {
+        setShouldInteract(!!hovering);
+      }}
       onDragCallback={({ active }) => {
         setIsDragging(active);
       }}
       onDragStopCallback={({ dragProps: { dragApi }, position }: any) => {
-        const newPos = getNearestBoardPosition(position);
-        pieceApi.position.set(...(newPos as [number, number, number]));
+        const nearestPosition = getNearestBoardPosition(position);
+        pieceApi.position.set(...nearestPosition);
         dragApi.start({
-          position: newPos,
+          position: nearestPosition,
         });
       }}
       objApi={pieceApi}
@@ -37,8 +59,9 @@ const CheckersPiece = ({ position, setIsDragging, isDragging, color }: CheckersP
         ref: pieceRef,
       }}
     >
-      <cylinderGeometry args={[2, 2, 1, 35]} />
-      <meshLambertMaterial color={color} />
+      <cylinderGeometry args={[0.35, 0.35, 0.2, 35]} />
+      <meshLambertMaterial map={texture2} />
+      <meshLambertMaterial map={texture1} />
     </DraggableMesh>
   );
 };

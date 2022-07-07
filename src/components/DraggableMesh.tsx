@@ -12,6 +12,11 @@ interface DraggableMeshProps {
       event: PointerEvent | MouseEvent | TouchEvent | KeyboardEvent;
     }
   ) => void;
+  onHoverCallback?: (
+    dragProps: Omit<FullGestureState<'hover'>, 'event'> & {
+      event: PointerEvent | MouseEvent | TouchEvent | KeyboardEvent;
+    }
+  ) => void;
   onDragStopCallback?: any;
   initialPosition: [number, number, number];
   objApi?: PublicApi;
@@ -21,6 +26,7 @@ interface DraggableMeshProps {
 const DraggableMesh = ({
   meshProps,
   children,
+  onHoverCallback,
   onDragCallback,
   onDragStopCallback,
   objApi,
@@ -29,6 +35,7 @@ const DraggableMesh = ({
 }: DraggableMeshProps) => {
   const draggableProps = useDraggable({
     initialPosition,
+    onHoverCallback,
     onDragCallback,
     onDragStopCallback,
     objApi,

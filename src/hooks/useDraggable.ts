@@ -13,6 +13,11 @@ interface UseDraggable {
       event: PointerEvent | MouseEvent | TouchEvent | KeyboardEvent;
     }
   ) => void;
+  onHoverCallback?: (
+    dragProps: Omit<FullGestureState<'hover'>, 'event'> & {
+      event: PointerEvent | MouseEvent | TouchEvent | KeyboardEvent;
+    }
+  ) => void;
   onDragStopCallback?: any;
   objApi?: PublicApi;
   isDragging?: boolean;
@@ -20,6 +25,7 @@ interface UseDraggable {
 
 const useDraggable = ({
   initialPosition,
+  onHoverCallback,
   onDragCallback,
   onDragStopCallback,
   objApi,
@@ -38,8 +44,10 @@ const useDraggable = ({
   }));
 
   const bind = useGesture({
-    onHover: ({ hovering, event }) => {
+    onHover: hoverProps => {
+      const { hovering, event } = hoverProps;
       event.stopPropagation();
+      onHoverCallback?.(hoverProps);
       api.start({
         scale: hovering && !isDragging ? 1.1 : 1,
       });
@@ -51,13 +59,13 @@ const useDraggable = ({
         objApi?.sleep();
         // @ts-ignore
         event.ray.intersectPlane(floorPlane, planeIntersectPoint);
-        setPosition([planeIntersectPoint.x, 3, planeIntersectPoint.z]);
+        setPosition([planeIntersectPoint.x, 1, planeIntersectPoint.z]);
         if (objApi) {
-          objApi.position.set(planeIntersectPoint.x, 3, planeIntersectPoint.z);
+          objApi.position.set(planeIntersectPoint.x, 1, planeIntersectPoint.z);
         }
       } else {
         objApi?.wakeUp();
-        onDragStopCallback({ dragProps: { ...dragProps, dragApi: api }, position });
+        onDragStopCallback?.({ dragProps: { ...dragProps, dragApi: api }, position });
       }
 
       onDragCallback?.(dragProps);
