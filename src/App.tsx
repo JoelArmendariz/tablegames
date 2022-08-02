@@ -1,31 +1,19 @@
+import Game from './Game';
+import MainMenu from './components/ui/MainMenu';
+import { CurrentGameProvider } from './context/CurrentGame/CurrentGameProvider';
 import './App.css';
-import { Canvas } from '@react-three/fiber';
-import { Physics } from '@react-three/cannon';
+import { CurrentGameContext, Games } from './context/CurrentGame/CurrentGameContext';
 
-import Table from './components/Table';
-import Checkers from './games/Checkers/Checkers';
-
-function App() {
-  return (
+const App = () => (
+  <CurrentGameProvider>
     <div className="App">
-      <Canvas shadows camera={{ fov: 50, position: [0, 8, 15] }}>
-        <color attach="background" args={['lightblue']} />
-        <ambientLight />
-        <directionalLight
-          castShadow
-          shadow-camera-left={-30}
-          shadow-camera-right={30}
-          shadow-camera-top={30}
-          shadow-camera-bottom={-30}
-          position={[0, 60, 0]}
-        />
-        <Physics>
-          <Table />
-          <Checkers />
-        </Physics>
-      </Canvas>
+      <CurrentGameContext.Consumer>
+        {({ currentGame }) =>
+          currentGame === Games.None ? <MainMenu /> : <Game currentGame={currentGame} />
+        }
+      </CurrentGameContext.Consumer>
     </div>
-  );
-}
+  </CurrentGameProvider>
+);
 
 export default App;

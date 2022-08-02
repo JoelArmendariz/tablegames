@@ -1,9 +1,5 @@
 import { Tuple } from '../../types/CommonTypes';
-
-export type CheckersPieceConfig = {
-  position: number[];
-  color: string;
-} | null;
+import { CheckersPieceConfig } from '../../types/checkersTypes';
 
 // Each position based on the chess-board-art.jpeg image
 // Each tile is 5 units away from each other

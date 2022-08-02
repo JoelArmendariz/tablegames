@@ -6,7 +6,7 @@ import { PublicApi } from '@react-three/cannon';
 
 interface DraggableMeshProps {
   meshProps: any;
-  children: any;
+  children?: any;
   onDragCallback?: (
     dragProps: Omit<FullGestureState<'drag'>, 'event'> & {
       event: PointerEvent | MouseEvent | TouchEvent | KeyboardEvent;

@@ -12,7 +12,6 @@ export enum InteractionTypes {
 
 interface ObjectInteractions {
   enabledInteractions: InteractionTypes[];
-  shouldInteract: boolean;
   rotation?: Tuple;
   isDragging?: boolean;
   objectApi: PublicApi;
@@ -22,7 +21,6 @@ interface ObjectInteractions {
 
 const useObjectInteractions = ({
   enabledInteractions,
-  shouldInteract,
   rotation: initialRotation = [0, 0, 0],
   objectRef,
   objectApi,
@@ -30,6 +28,7 @@ const useObjectInteractions = ({
   getSnapPosition = v => v,
 }: ObjectInteractions) => {
   const [rotation, setRotation] = useState(initialRotation);
+  const [shouldInteract, setShouldInteract] = useState(false);
 
   const handleKeydown = useCallback(
     ({ key }: KeyboardEvent) => {
@@ -75,7 +74,7 @@ const useObjectInteractions = ({
         if (objectRef.current) {
           new Tween(currentRotation)
             .to(
-              [currentRotation[0], currentRotation[1] + Math.PI, currentRotation[2]],
+              [currentRotation[0], currentRotation[1] + Math.PI / 2, currentRotation[2]],
               200
             )
             .onUpdate(() => {
@@ -104,6 +103,8 @@ const useObjectInteractions = ({
       callback: handleKeydown,
     },
   ]);
+
+  return setShouldInteract;
 };
 
 export default useObjectInteractions;

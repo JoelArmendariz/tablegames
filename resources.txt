@@ -1,0 +1,11 @@
+GLTF resources:
+
+For combining gltf and bin files to glb
+http://glb-packer.glitch.me/
+https://tools.alitasci.net/gltf-to-glb-packer/?_ga=2.50525165.599153954.1659207915-2083128636.1659207915
+
+View GLTF
+https://gltf-viewer.donmccurdy.com/
+
+GLTF to jsx
+https://gltf.pmnd.rs/

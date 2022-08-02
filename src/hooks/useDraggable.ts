@@ -5,6 +5,7 @@ import * as THREE from 'three';
 
 import type { FullGestureState } from '@use-gesture/react';
 import { PublicApi } from '@react-three/cannon';
+import { useCurrentGameContext } from '../context/CurrentGame/CurrentGameProvider';
 
 interface UseDraggable {
   initialPosition: [number, number, number];
@@ -32,6 +33,7 @@ const useDraggable = ({
   isDragging,
 }: UseDraggable) => {
   const [position, setPosition] = useState<[number, number, number]>(initialPosition);
+  const { dragElevation } = useCurrentGameContext();
 
   const floorPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
   const planeIntersectPoint = new THREE.Vector3();
@@ -59,9 +61,13 @@ const useDraggable = ({
         objApi?.sleep();
         // @ts-ignore
         event.ray.intersectPlane(floorPlane, planeIntersectPoint);
-        setPosition([planeIntersectPoint.x, 1, planeIntersectPoint.z]);
+        setPosition([planeIntersectPoint.x, dragElevation, planeIntersectPoint.z]);
         if (objApi) {
-          objApi.position.set(planeIntersectPoint.x, 1, planeIntersectPoint.z);
+          objApi.position.set(
+            planeIntersectPoint.x,
+            dragElevation,
+            planeIntersectPoint.z
+          );
         }
       } else {
         objApi?.wakeUp();

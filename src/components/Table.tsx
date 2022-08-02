@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { useTexture } from '@react-three/drei';
 import { useBox } from '@react-three/cannon';
 
-import tableMap from '../assets/table_wood_texture.jpeg';
+import tableMap from '../assets/textures/table_wood_texture.jpeg';
 
 const Table = () => {
   const [tableRef] = useBox(() => ({

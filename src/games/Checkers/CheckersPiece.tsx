@@ -2,9 +2,6 @@ import { useCylinder } from '@react-three/cannon';
 import { useState } from 'react';
 import DraggableMesh from '../../components/DraggableMesh';
 import { getNearestBoardPosition } from './checkersUtils';
-import checkersMap from '../../assets/checkers_PNG18.png';
-import boardMap from '../../assets/chess-board-art.jpeg';
-import { useTexture } from '@react-three/drei';
 import useObjectInteractions, {
   InteractionTypes,
 } from '../../hooks/useObjectInteractions';
@@ -17,18 +14,14 @@ interface CheckersProps {
 }
 
 const CheckersPiece = ({ position, setIsDragging, isDragging, color }: CheckersProps) => {
-  const [shouldInteract, setShouldInteract] = useState(false);
   const [pieceRef, pieceApi] = useCylinder(() => ({
     mass: 1,
     position,
     args: [0.5, 0.5, 0.2],
   }));
-  const texture1 = useTexture(checkersMap);
-  const texture2 = useTexture(boardMap);
 
-  useObjectInteractions({
+  const setShouldInteract = useObjectInteractions({
     enabledInteractions: [InteractionTypes.Rotate, InteractionTypes.Flip],
-    shouldInteract,
     objectRef: pieceRef,
     objectApi: pieceApi,
     isDragging,
@@ -39,7 +32,7 @@ const CheckersPiece = ({ position, setIsDragging, isDragging, color }: CheckersP
     <DraggableMesh
       initialPosition={position}
       onHoverCallback={({ hovering }) => {
-        setShouldInteract(!!hovering);
+        setShouldInteract(!!hovering && !isDragging);
       }}
       onDragCallback={({ active }) => {
         setIsDragging(active);
@@ -57,11 +50,11 @@ const CheckersPiece = ({ position, setIsDragging, isDragging, color }: CheckersP
         receiveShadow: true,
         castShadow: true,
         ref: pieceRef,
+        rotation: [-Math.PI / 2, 0, 0],
       }}
     >
       <cylinderGeometry args={[0.35, 0.35, 0.2, 35]} />
-      <meshLambertMaterial map={texture2} />
-      <meshLambertMaterial map={texture1} />
+      <meshLambertMaterial color={color} />
     </DraggableMesh>
   );
 };
